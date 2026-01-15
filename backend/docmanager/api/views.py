@@ -1,8 +1,8 @@
 from typing import Dict, Any
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-# from django.http import StreamingResponse
 from django.http import StreamingHttpResponse
 from django.conf import settings
 from urllib.parse import quote
@@ -17,6 +17,7 @@ manager = DocManager(settings.TEMPLATES_DIR)
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def templates_list(request):
     """List all available templates."""
     try:
@@ -30,6 +31,7 @@ def templates_list(request):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def placeholders(request):
     """Get placeholders for a template."""
     filename = request.data.get('filename')
@@ -59,6 +61,7 @@ def placeholders(request):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def generate_doc(request):
     """Generate a document from template and context."""
     filename = request.data.get('filename')
@@ -97,6 +100,7 @@ def generate_doc(request):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def validate_doc(request):
     """Validate a document (placeholder for validator logic)."""
     if 'file' not in request.FILES:
