@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useLocation } from "react-router-dom";
 import { cn } from "@shared/utils/cn";
-import { Bell, Moon, Sun, User } from "lucide-react";
+import { Moon, Sun, LogOut } from "lucide-react";
 import { Button } from "@shared/components/ui";
 import {
   Tooltip,
@@ -9,6 +9,7 @@ import {
   TooltipTrigger,
 } from "@shared/components/ui/Tooltip";
 import { Separator } from "@shared/components/ui/Separator";
+import { useAuth } from "@features/auth";
 
 // Page title mapping
 const pageTitles: Record<string, { title: string; description?: string }> = {
@@ -29,6 +30,7 @@ interface HeaderProps {
 export function Header({ isSidebarCollapsed }: HeaderProps) {
   const location = useLocation();
   const [isDarkMode, setIsDarkMode] = React.useState(false);
+  const { user, logout } = useAuth();
 
   // Get page info based on current route
   const getPageInfo = () => {
@@ -52,6 +54,10 @@ export function Header({ isSidebarCollapsed }: HeaderProps) {
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
     document.documentElement.classList.toggle("dark");
+  };
+
+  const handleLogout = async () => {
+    await logout();
   };
 
   return (
@@ -90,28 +96,22 @@ export function Header({ isSidebarCollapsed }: HeaderProps) {
             </TooltipContent>
           </Tooltip>
 
-          {/* Notifications */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" className="relative">
-                <Bell className="h-5 w-5" />
-                <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-destructive" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Notifications</TooltipContent>
-          </Tooltip>
-
           <Separator orientation="vertical" className="h-6" />
 
-          {/* User menu */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <User className="h-5 w-5" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Profile</TooltipContent>
-          </Tooltip>
+          {/* User info and logout */}
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-muted-foreground hidden sm:inline">
+              {user?.username}
+            </span>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon" onClick={handleLogout}>
+                  <LogOut className="h-5 w-5" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Logout</TooltipContent>
+            </Tooltip>
+          </div>
         </div>
       </div>
     </header>

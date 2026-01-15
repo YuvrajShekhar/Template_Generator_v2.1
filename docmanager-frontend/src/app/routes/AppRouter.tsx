@@ -1,8 +1,12 @@
 import * as React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { MainLayout } from "@app/layout";
+import { ProtectedRoute } from "@features/auth";
 
 // Lazy load feature pages for better performance
+const LoginPage = React.lazy(
+  () => import("@features/auth/pages/LoginPage")
+);
 const TemplateSelectionPage = React.lazy(
   () => import("@features/document-generator/pages/TemplateSelectionPage")
 );
@@ -29,8 +33,17 @@ export function AppRouter() {
   return (
     <React.Suspense fallback={<PageLoader />}>
       <Routes>
-        {/* Main layout wrapper */}
-        <Route element={<MainLayout />}>
+        {/* Public route - Login */}
+        <Route path="/login" element={<LoginPage />} />
+
+        {/* Protected routes with MainLayout */}
+        <Route
+          element={
+            <ProtectedRoute>
+              <MainLayout />
+            </ProtectedRoute>
+          }
+        >
           {/* Redirect root to generator */}
           <Route path="/" element={<Navigate to="/generator" replace />} />
 

@@ -1,4 +1,5 @@
 import { API_CONFIG } from "@shared/constants/api";
+import { AUTH_STORAGE_KEYS, AUTH_ROUTES } from "@shared/constants/auth";
 
 /**
  * Custom error class for API errors
@@ -20,23 +21,54 @@ export class ApiError extends Error {
  */
 interface RequestOptions extends Omit<RequestInit, "body"> {
   body?: Record<string, unknown> | FormData;
+  skipAuth?: boolean;
 }
 
 /**
- * Base fetch function with error handling
+ * Get the access token from storage
+ */
+function getAccessToken(): string | null {
+  return localStorage.getItem(AUTH_STORAGE_KEYS.ACCESS_TOKEN);
+}
+
+/**
+ * Handle 401 unauthorized - redirect to login
+ */
+function handleUnauthorized(): void {
+  localStorage.removeItem(AUTH_STORAGE_KEYS.ACCESS_TOKEN);
+  localStorage.removeItem(AUTH_STORAGE_KEYS.REFRESH_TOKEN);
+  localStorage.removeItem(AUTH_STORAGE_KEYS.USER);
+
+  // Only redirect if not already on login page
+  if (!window.location.pathname.includes(AUTH_ROUTES.LOGIN)) {
+    window.location.href = AUTH_ROUTES.LOGIN;
+  }
+}
+
+/**
+ * Base fetch function with error handling and auth
  */
 async function baseFetch<T>(
   endpoint: string,
   options: RequestOptions = {}
 ): Promise<T> {
-  const { body, headers: customHeaders, ...restOptions } = options;
+  const { body, headers: customHeaders, skipAuth = false, ...restOptions } = options;
 
   const isFormData = body instanceof FormData;
 
+  // Build headers
   const headers: HeadersInit = {
     ...(isFormData ? {} : { "Content-Type": "application/json" }),
     ...customHeaders,
   };
+
+  // Add auth header if we have a token and skipAuth is false
+  if (!skipAuth) {
+    const token = getAccessToken();
+    if (token) {
+      (headers as Record<string, string>)["Authorization"] = `Bearer ${token}`;
+    }
+  }
 
   const config: RequestInit = {
     ...restOptions,
@@ -46,10 +78,16 @@ async function baseFetch<T>(
 
   const response = await fetch(`${API_CONFIG.BASE_URL}${endpoint}`, config);
 
+  // Handle 401 Unauthorized
+  if (response.status === 401) {
+    handleUnauthorized();
+    throw new ApiError("Unauthorized", 401, "Unauthorized");
+  }
+
   if (!response.ok) {
-    const errorData = await response.text().catch(() => "");
+    const errorData = await response.json().catch(() => ({}));
     throw new ApiError(
-      errorData || response.statusText,
+      errorData.error || errorData.detail || response.statusText,
       response.status,
       response.statusText,
       errorData
