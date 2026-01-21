@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { Placeholder, PlaceholderType } from "../types";
+import type { Placeholder } from "../types";
 
 /**
  * Create a Zod schema for a single placeholder based on its type

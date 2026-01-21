@@ -1,4 +1,3 @@
-import * as React from "react";
 import { motion } from "framer-motion";
 import { FileText, User, Building2, Tag, Calendar } from "lucide-react";
 import { Badge, Card, CardContent } from "@shared/components/ui";

@@ -1,4 +1,3 @@
-import * as React from "react";
 import { AnimatePresence } from "framer-motion";
 import { TemplateCard } from "./TemplateCard";
 import { NoSearchResults } from "@shared/components/feedback";

@@ -36,7 +36,7 @@ export const documentGeneratorApi = {
   ): Promise<void> => {
     const request: GenerateDocRequest = { filename, context };
     
-    const blob = await api.post<Blob>(API_ENDPOINTS.GENERATE_DOC, request);
+    const blob = await api.post<Blob>(API_ENDPOINTS.GENERATE_DOC, request as unknown as Record<string, unknown>);
     
     // Extract filename from the original template name
     const downloadFilename = filename.replace(/\.docx$/i, "_generated.docx");

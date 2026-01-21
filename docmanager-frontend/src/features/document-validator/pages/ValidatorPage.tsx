@@ -1,4 +1,3 @@
-import * as React from "react";
 import { motion } from "framer-motion";
 import { FileCheck, RotateCcw } from "lucide-react";
 import { Button } from "@shared/components/ui";

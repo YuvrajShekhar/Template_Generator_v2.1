@@ -70,10 +70,10 @@ export function Header({ isSidebarCollapsed }: HeaderProps) {
       <div className="flex h-full items-center justify-between px-6">
         {/* Left side - Page title */}
         <div className="flex flex-col gap-0.5">
-          <h1 className="text-lg font-semibold">{pageInfo.title}</h1>
-          {pageInfo.description && (
+          <h1 className="text-lg font-semibold">{pageInfo?.title}</h1>
+          {pageInfo?.description && (
             <p className="text-sm text-muted-foreground">
-              {pageInfo.description}
+              {pageInfo?.description}
             </p>
           )}
         </div>
