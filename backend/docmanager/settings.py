@@ -128,6 +128,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "http://81.169.171.133:5173",
+    "https://premiumshop-berlin.de",
+    "https://template-generator-v2-1.vercel.app",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
