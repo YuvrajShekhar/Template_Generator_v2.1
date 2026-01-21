@@ -8,6 +8,7 @@ import { AppRouter } from "@app/routes/AppRouter";
 import "@styles/globals.css";
 
 // Create a client for TanStack Query
+//main file
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
