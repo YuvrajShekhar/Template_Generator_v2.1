@@ -130,6 +130,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://81.169.171.133:5173",
     "https://premiumshop-berlin.de",
     "https://www.premiumshop-berlin.de",
+    "https://premiumshopberlin.de",
+    "https://www.premiumshopberlin.de",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
