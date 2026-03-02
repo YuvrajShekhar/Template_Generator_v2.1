@@ -2,7 +2,7 @@
  * API Configuration
  */
 export const API_CONFIG = {
-  BASE_URL: "",  // Empty string = same domain
+  BASE_URL: import.meta.env.VITE_API_BASE_URL || "https://www.premiumshopberlin.de",
   TIMEOUT: 30000,
 } as const;
 
