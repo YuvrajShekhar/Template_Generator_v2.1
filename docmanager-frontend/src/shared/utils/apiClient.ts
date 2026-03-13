@@ -148,7 +148,7 @@ export async function fetchWithRetry<T>(
       if (contentType?.includes("application/json")) {
         return (await response.json()) as T;
       }
-      
+
       return response as unknown as T;
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
@@ -192,30 +192,19 @@ export function getErrorMessage(error: unknown): string {
       case 429:
         return "Too many requests. Please try again later.";
       case 500:
-        return "Server error. Please try again later.";
       case 502:
       case 503:
       case 504:
-        return "Service temporarily unavailable. Please try again.";
+        return "Server is down. Please contact administrator.";
       default:
         return error.message || "An unexpected error occurred.";
     }
   }
 
-  if (error instanceof NetworkError) {
-    return "Unable to connect to the server. Please check your internet connection.";
-  }
-
-  if (error instanceof TimeoutError) {
-    return "The request took too long. Please try again.";
-  }
-
-  if (error instanceof Error) {
-    return error.message;
-  }
-
-  return "An unexpected error occurred.";
+  // Any other error = server is down
+  return "Server is down. Please contact administrator.";
 }
+
 
 /**
  * Check if error is retryable
