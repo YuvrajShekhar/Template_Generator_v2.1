@@ -12,6 +12,8 @@ export interface Placeholder {
   values?: Array<string | number>;
   optional?: boolean;
   offset?: number;
+  min_offset?: number;
+  require_one_of?: string[];
   hidden?: boolean;
   label?: string;
   description?: string;
