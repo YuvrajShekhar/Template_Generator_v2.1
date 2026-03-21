@@ -106,10 +106,10 @@ export function DynamicForm({
                       row.length === 1
                         ? "grid-cols-1"
                         : row.length === 2
-                        ? "grid-cols-1 md:grid-cols-2"
-                        : row.length === 3
-                        ? "grid-cols-1 md:grid-cols-3"
-                        : "grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
+                          ? "grid-cols-1 md:grid-cols-2"
+                          : row.length === 3
+                            ? "grid-cols-1 md:grid-cols-3"
+                            : "grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
                     )}
                   >
                     {row.map((fieldName) => {
@@ -124,6 +124,7 @@ export function DynamicForm({
                           onChange={onChange}
                           error={errors[fieldName]}
                           disabled={isSubmitting}
+                          allValues={values}
                         />
                       );
                     })}
@@ -153,6 +154,7 @@ export function DynamicForm({
                       onChange={onChange}
                       error={errors[placeholder.name]}
                       disabled={isSubmitting}
+                      allValues={values}
                     />
                   ))}
                 </div>

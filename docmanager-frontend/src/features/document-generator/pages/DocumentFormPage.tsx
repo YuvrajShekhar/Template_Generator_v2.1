@@ -17,7 +17,7 @@ import type { FormFieldValue, FormValues } from "../types";
 export default function DocumentFormPage() {
   const { filename, provider } = useParams<{ filename: string; provider?: string }>();
   const navigate = useNavigate();
-  
+
   // Decode URL params
   const decodedFilename = filename ? decodeURIComponent(filename) : "";
   const decodedProvider = provider ? decodeURIComponent(provider) : undefined;
@@ -86,15 +86,58 @@ export default function DocumentFormPage() {
 
     const errors: Record<string, string> = {};
 
+    // 1. Standard required field check
     data.placeholders.forEach((ph) => {
       if (ph.hidden) return;
       if (ph.optional) return;
-
       const value = formValues[ph.name];
-
-      // Check required fields
       if (value === undefined || value === "" || value === null) {
         errors[ph.name] = "This field is required";
+      }
+    });
+
+    // 2. require_one_of group check
+    // Collect unique groups, then verify at least one field in each is filled
+    const seenGroups = new Set<string>();
+    data.placeholders.forEach((ph) => {
+      if (!ph.require_one_of) return;
+      const groupKey = [...ph.require_one_of].sort().join("|");
+      if (seenGroups.has(groupKey)) return;
+      seenGroups.add(groupKey);
+
+      const anyFilled = ph.require_one_of.some((fieldName) => {
+        const val = formValues[fieldName];
+        return val !== undefined && val !== "" && val !== null;
+      });
+
+      if (!anyFilled) {
+        ph.require_one_of.forEach((fieldName) => {
+          errors[fieldName] = `At least one of these fields is required`;
+        });
+      }
+    });
+
+    // 3. min_offset date check
+    // Find the anchor field (the one with offset but no min_offset — i.e. "Datum")
+    // and compare against fields that have min_offset
+    const anchorField = data.placeholders.find(
+      (ph) => ph.type === "date" && ph.offset !== undefined && !ph.min_offset
+    );
+    const anchorValue = anchorField ? (formValues[anchorField.name] as string) : null;
+
+    data.placeholders.forEach((ph) => {
+      if (ph.type !== "date" || ph.min_offset === undefined) return;
+      const value = formValues[ph.name] as string;
+      if (!value) return;
+
+      const baseDate = anchorValue ? new Date(anchorValue) : new Date();
+      const minDate = new Date(baseDate);
+      minDate.setDate(minDate.getDate() + ph.min_offset);
+
+      const selectedDate = new Date(value);
+      if (selectedDate < minDate) {
+        const formatted = minDate.toLocaleDateString("de-DE");
+        errors[ph.name] = `Date must be at least ${ph.min_offset} days after ${anchorField?.name ?? "today"} (${formatted})`;
       }
     });
 

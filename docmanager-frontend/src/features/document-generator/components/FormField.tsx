@@ -20,6 +20,7 @@ interface FormFieldProps {
   error?: string;
   disabled?: boolean;
   className?: string;
+  allValues?: Record<string, FormFieldValue>;
 }
 
 export function FormField({
@@ -29,6 +30,7 @@ export function FormField({
   error,
   disabled,
   className,
+  allValues = {},
 }: FormFieldProps) {
   const { name, type, values, optional, hidden } = placeholder;
 
@@ -82,18 +84,41 @@ export function FormField({
           </Label>
         </div>
       ) : type === "date" ? (
-        <Input
-          id={name}
-          type="date"
-          value={String(value ?? "")}
-          onChange={(e) => handleChange(e.target.value)}
-          error={!!error}
-          disabled={disabled}
-        />
+        (() => {
+          let minDate: string | undefined;
+          if (placeholder.min_offset !== undefined) {
+            // Find anchor: a date field that has offset but no min_offset
+            // We receive allValues so we can compute from the actual Datum value
+            const anchorValue = Object.entries(allValues).find(([k]) => {
+              // We identify the anchor by convention: it's named "Datum" or
+              // it's the first date value that isn't this field itself
+              return k !== name;
+            });
+            const base = anchorValue ? new Date(anchorValue[1] as string) : new Date();
+            if (!isNaN(base.getTime())) {
+              const min = new Date(base);
+              min.setDate(min.getDate() + placeholder.min_offset);
+              minDate = min.toISOString().split("T")[0];
+            }
+          }
+          return (
+            <Input
+              id={name}
+              type="date"
+              value={String(value ?? "")}
+              onChange={(e) => handleChange(e.target.value)}
+              min={minDate}
+              error={!!error}
+              disabled={disabled}
+            />
+          );
+        })()
       ) : type === "number" ? (
         <Input
           id={name}
-          type="number"
+          type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
           value={String(value ?? "")}
           onChange={(e) => handleChange(e.target.value)}
           placeholder={`Enter ${label.toLowerCase()}`}

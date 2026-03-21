@@ -18,11 +18,20 @@ function createFieldSchema(placeholder: Placeholder): z.ZodTypeAny {
       break;
 
     case "number":
-      schema = z.coerce.number({
-        invalid_type_error: `${name} must be a number`,
-      });
+      schema = z.string()
+        .refine(
+          (val) => val === "" || /^\d+$/.test(val.trim()),
+          { message: `${name} must be a number (digits only, no letters)` }
+        )
+        .transform((val) => (val === "" ? undefined : Number(val)));
       if (!optional) {
-        schema = (schema as z.ZodNumber).min(0, `${name} is required`);
+        schema = z.string()
+          .min(1, `${name} is required`)
+          .refine(
+            (val) => /^\d+$/.test(val.trim()),
+            { message: `${name} must be a number (digits only, no letters)` }
+          )
+          .transform((val) => Number(val));
       }
       break;
 
@@ -78,7 +87,7 @@ export function createFormSchema(placeholders: Placeholder[]) {
   placeholders.forEach((placeholder) => {
     // Skip hidden fields
     if (placeholder.hidden) return;
-    
+
     schemaShape[placeholder.name] = createFieldSchema(placeholder);
   });
 

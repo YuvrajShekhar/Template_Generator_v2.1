@@ -51,6 +51,19 @@ export interface NormalizedValidationResult {
   };
 }
 
+export interface Placeholder {
+  name: string;
+  type: PlaceholderType;
+  values?: Array<string | number>;
+  optional?: boolean;
+  offset?: number;
+  min_offset?: number;           // NEW: minimum date = anchor field date + this offset
+  require_one_of?: string[];     // NEW: at least one field in this group must be filled
+  hidden?: boolean;
+  label?: string;
+  description?: string;
+}
+
 /**
  * Validation state
  */
