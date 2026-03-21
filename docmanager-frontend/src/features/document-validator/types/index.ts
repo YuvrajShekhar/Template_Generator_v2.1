@@ -2,7 +2,7 @@
  * Severity levels for validation issues
  */
 export type IssueSeverity = "error" | "warn" | "info";
-
+import type { PlaceholderType } from "@features/document-generator/types";
 /**
  * Location of an issue in the document
  */
