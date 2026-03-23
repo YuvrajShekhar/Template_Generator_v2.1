@@ -120,10 +120,6 @@ export default function DocumentFormPage() {
     // 3. min_offset date check
     // Find the anchor field (the one with offset but no min_offset — i.e. "Datum")
     // and compare against fields that have min_offset
-    const anchorField = data.placeholders.find(
-      (ph) => ph.type === "date" && ph.offset !== undefined && !ph.min_offset
-    );
-    const anchorValue = anchorField ? (formValues[anchorField.name] as string) : null;
 
     // 3. min_offset date check
     data.placeholders.forEach((ph) => {
