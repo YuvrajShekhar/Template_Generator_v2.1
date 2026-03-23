@@ -87,19 +87,13 @@ export function FormField({
         (() => {
           let minDate: string | undefined;
           if (placeholder.min_offset !== undefined) {
-            // Find anchor: a date field that has offset but no min_offset
-            // We receive allValues so we can compute from the actual Datum value
-            const anchorValue = Object.entries(allValues).find(([k]) => {
-              // We identify the anchor by convention: it's named "Datum" or
-              // it's the first date value that isn't this field itself
-              return k !== name;
-            });
-            const base = anchorValue ? new Date(anchorValue[1] as string) : new Date();
-            if (!isNaN(base.getTime())) {
-              const min = new Date(base);
-              min.setDate(min.getDate() + placeholder.min_offset);
-              minDate = min.toISOString().split("T")[0];
-            }
+            const datumValue = allValues["Datum"] as string | undefined;
+            const base = datumValue && /^\d{4}-\d{2}-\d{2}$/.test(datumValue)
+              ? new Date(datumValue)
+              : new Date();
+            const min = new Date(base);
+            min.setDate(min.getDate() + placeholder.min_offset);
+            minDate = min.toISOString().split("T")[0];
           }
           return (
             <Input

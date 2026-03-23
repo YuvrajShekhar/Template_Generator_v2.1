@@ -125,19 +125,24 @@ export default function DocumentFormPage() {
     );
     const anchorValue = anchorField ? (formValues[anchorField.name] as string) : null;
 
+    // 3. min_offset date check
     data.placeholders.forEach((ph) => {
       if (ph.type !== "date" || ph.min_offset === undefined) return;
       const value = formValues[ph.name] as string;
       if (!value) return;
 
-      const baseDate = anchorValue ? new Date(anchorValue) : new Date();
-      const minDate = new Date(baseDate);
+      const datumValue = formValues["Datum"] as string | undefined;
+      const base = datumValue && /^\d{4}-\d{2}-\d{2}$/.test(datumValue)
+        ? new Date(datumValue)
+        : new Date();
+
+      const minDate = new Date(base);
       minDate.setDate(minDate.getDate() + ph.min_offset);
 
       const selectedDate = new Date(value);
       if (selectedDate < minDate) {
         const formatted = minDate.toLocaleDateString("de-DE");
-        errors[ph.name] = `Date must be at least ${ph.min_offset} days after ${anchorField?.name ?? "today"} (${formatted})`;
+        errors[ph.name] = `Datum muss mindestens ${ph.min_offset} Tage nach dem Datum sein (frühestens ${formatted})`;
       }
     });
 
