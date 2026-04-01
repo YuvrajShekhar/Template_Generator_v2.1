@@ -14,6 +14,7 @@ export const API_ENDPOINTS = {
   PLACEHOLDERS: "/api/placeholders/",
   GENERATE_DOC: "/api/generateDoc/",
   VALIDATE_DOC: "/api/validateDoc/",
+  DISPATCH: "/api/dispatch/",
 } as const;
 
 /**
@@ -23,6 +24,7 @@ export const QUERY_KEYS = {
   templates: ["templates"] as const,
   placeholders: (filename: string) => ["placeholders", filename] as const,
   validation: (filename: string) => ["validation", filename] as const,
+  dispatch: ["dispatch-history"] as const,
 } as const;
 
 /**

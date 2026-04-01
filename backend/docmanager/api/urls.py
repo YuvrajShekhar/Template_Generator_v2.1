@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from . import auth_views
+from . import dispatch_views
 
 urlpatterns = [
     # Authentication endpoints
@@ -14,4 +15,11 @@ urlpatterns = [
     path('placeholders/', views.placeholders, name='placeholders'),
     path('generateDoc/', views.generate_doc, name='generate-doc'),
     path('validateDoc/', views.validate_doc, name='validate-doc'),
+
+    # Mail sent to customer endpoints
+    path('dispatch/', dispatch_views.dispatch_history, name='dispatch-history'),
 ]
+
+
+
+

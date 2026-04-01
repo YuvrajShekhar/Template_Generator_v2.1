@@ -7,6 +7,7 @@ import {
   Settings,
   ChevronLeft,
   ChevronRight,
+  Mail,
 } from "lucide-react";
 import { Button } from "@shared/components/ui";
 import {
@@ -35,6 +36,12 @@ const navItems: NavItem[] = [
     icon: <FileCheck className="h-5 w-5" />,
     description: "Validate document templates",
   },
+  {
+    label: "Email Dispatch History",
+    href: "/dispatch",
+    icon: <Mail className="h-5 w-5" />,
+    description: "View sent email dispatch records",
+  },
 ];
 
 interface SidebarProps {
@@ -62,7 +69,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
             <span className="font-semibold text-lg">DocManager</span>
           </div>
         )}
-        
+
         <Button
           variant="ghost"
           size="icon"
@@ -81,7 +88,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
       <nav className="flex flex-col gap-1 p-2">
         {navItems.map((item) => {
           const isActive = location.pathname.startsWith(item.href);
-          
+
           const linkContent = (
             <NavLink
               key={item.href}

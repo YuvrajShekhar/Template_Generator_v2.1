@@ -21,6 +21,10 @@ const pageTitles: Record<string, { title: string; description?: string }> = {
     title: "Document Validator",
     description: "Validate your document templates",
   },
+  "/dispatch": {
+    title: "Email Dispatch History",
+    description: "View all sent email records",
+  },
 };
 
 interface HeaderProps {
@@ -38,14 +42,14 @@ export function Header({ isSidebarCollapsed }: HeaderProps) {
     if (pageTitles[location.pathname]) {
       return pageTitles[location.pathname];
     }
-    
+
     // Check for partial match (for nested routes)
     for (const [path, info] of Object.entries(pageTitles)) {
       if (location.pathname.startsWith(path)) {
         return info;
       }
     }
-    
+
     return { title: "DocManager", description: undefined };
   };
 

@@ -16,6 +16,9 @@ const DocumentFormPage = React.lazy(
 const ValidatorPage = React.lazy(
   () => import("@features/document-validator/pages/ValidatorPage")
 );
+const EmailDispatchPage = React.lazy(
+  () => import("@features/email-dispatch/pages/EmailDispatchPage")
+);
 
 // Loading fallback component
 function PageLoader() {
@@ -57,6 +60,9 @@ export function AppRouter() {
           {/* Document Validator routes */}
           <Route path="/validator" element={<ValidatorPage />} />
 
+          {/* Email Dispatch routes */}
+          <Route path="/dispatch" element={<EmailDispatchPage />} />
+
           {/* 404 fallback */}
           <Route
             path="*"
@@ -72,3 +78,8 @@ export function AppRouter() {
     </React.Suspense>
   );
 }
+
+
+
+
+// Inside <Route element={<MainLayout />}>:
