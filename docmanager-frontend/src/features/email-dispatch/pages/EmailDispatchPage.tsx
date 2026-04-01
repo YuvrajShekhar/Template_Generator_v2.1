@@ -25,7 +25,7 @@ export default function EmailDispatchPage() {
             <CardHeader>
                 <CardTitle>E-Mail Versandhistorie</CardTitle>
                 <CardDescription>
-                    Übersicht aller versendeten und ausstehenden E-Mails
+                    Übersicht aller versendeten E-Mails
                 </CardDescription>
             </CardHeader>
             <CardContent>
