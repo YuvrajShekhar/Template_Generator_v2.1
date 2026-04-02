@@ -112,8 +112,8 @@ export function DispatchTable({ records, isLoading, isError }: DispatchTableProp
     const [filters, setFilters] = React.useState<Filters>(DEFAULT_FILTERS);
     const [page, setPage] = React.useState(1);
     const [pageSize, setPageSize] = React.useState(50);
-    const [sortField, setSortField] = React.useState<SortField | null>(null);
-    const [sortDir, setSortDir] = React.useState<SortDirection>(null);
+    const [sortField, setSortField] = React.useState<SortField | null>("Date");
+    const [sortDir, setSortDir] = React.useState<SortDirection>("desc");
 
     // Reset to page 1 whenever filters or pageSize change
     React.useEffect(() => {
