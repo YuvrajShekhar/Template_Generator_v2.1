@@ -12,8 +12,6 @@ export interface Placeholder {
   values?: Array<string | number>;
   optional?: boolean;
   offset?: number;
-  min_offset?: number;
-  require_one_of?: string[];
   hidden?: boolean;
   label?: string;
   description?: string;
@@ -26,6 +24,7 @@ export interface TemplateMeta {
   provider?: string[];
   category?: string[];
   tags?: string[];
+  vertragstyp?: string[];   // NEW: e.g. ["Mobilfunk"], ["DSL"], ["TV"], ["Kabel"]
   version?: string;
   creator?: string;
   name?: string;
@@ -78,6 +77,7 @@ export interface GenerateDocRequest {
 export interface TemplateFilters {
   provider: string;
   category: string;
+  vertragstyp: string;   // NEW
   search: string;
   tags: string[];
 }

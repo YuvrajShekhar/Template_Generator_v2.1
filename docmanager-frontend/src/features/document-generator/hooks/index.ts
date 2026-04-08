@@ -2,6 +2,7 @@ export {
   useTemplates,
   useTemplateProviders,
   useTemplateCategories,
+  useTemplateVertragstypen,
   useTemplateTags,
 } from "./useTemplates";
 

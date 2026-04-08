@@ -19,12 +19,12 @@ export function useTemplates() {
  */
 export function useTemplateProviders(templates: TemplatesResponse | undefined) {
   if (!templates?.files) return [];
-  
+
   const providers = new Set<string>();
   templates.files.forEach((file) => {
     file.meta.provider?.forEach((p) => providers.add(p));
   });
-  
+
   return Array.from(providers).sort((a, b) => a.localeCompare(b));
 }
 
@@ -33,13 +33,27 @@ export function useTemplateProviders(templates: TemplatesResponse | undefined) {
  */
 export function useTemplateCategories(templates: TemplatesResponse | undefined) {
   if (!templates?.files) return [];
-  
+
   const categories = new Set<string>();
   templates.files.forEach((file) => {
     file.meta.category?.forEach((c) => categories.add(c));
   });
-  
+
   return Array.from(categories).sort((a, b) => a.localeCompare(b));
+}
+
+/**
+ * Extract unique Vertragstypen from templates
+ */
+export function useTemplateVertragstypen(templates: TemplatesResponse | undefined) {
+  if (!templates?.files) return [];
+
+  const typen = new Set<string>();
+  templates.files.forEach((file) => {
+    file.meta.vertragstyp?.forEach((t) => typen.add(t));
+  });
+
+  return Array.from(typen).sort((a, b) => a.localeCompare(b));
 }
 
 /**
@@ -47,11 +61,11 @@ export function useTemplateCategories(templates: TemplatesResponse | undefined) 
  */
 export function useTemplateTags(templates: TemplatesResponse | undefined) {
   if (!templates?.files) return [];
-  
+
   const tags = new Set<string>();
   templates.files.forEach((file) => {
     file.meta.tags?.forEach((t) => tags.add(t));
   });
-  
+
   return Array.from(tags).sort((a, b) => a.localeCompare(b));
 }

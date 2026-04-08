@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Search, X, Filter, SlidersHorizontal } from "lucide-react";
+import { Search, X, Filter, SlidersHorizontal, Tv } from "lucide-react";
 import {
   Input,
   Button,
@@ -18,6 +18,7 @@ interface TemplateFiltersProps {
   onFilterChange: (filters: FilterState) => void;
   providers: string[];
   categories: string[];
+  vertragstypen: string[];   // NEW
   totalCount: number;
   filteredCount: number;
   className?: string;
@@ -28,6 +29,7 @@ export function TemplateFilters({
   onFilterChange,
   providers,
   categories,
+  vertragstypen,             // NEW
   totalCount,
   filteredCount,
   className,
@@ -35,6 +37,7 @@ export function TemplateFilters({
   const hasActiveFilters =
     filters.provider !== "" ||
     filters.category !== "" ||
+    filters.vertragstyp !== "" ||
     filters.search !== "";
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,10 +52,15 @@ export function TemplateFilters({
     onFilterChange({ ...filters, category: value === "all" ? "" : value });
   };
 
+  const handleVertragstypenChange = (value: string) => {
+    onFilterChange({ ...filters, vertragstyp: value === "all" ? "" : value });
+  };
+
   const handleClearFilters = () => {
     onFilterChange({
       provider: "",
       category: "",
+      vertragstyp: "",
       search: "",
       tags: [],
     });
@@ -61,9 +69,9 @@ export function TemplateFilters({
   return (
     <div className={cn("space-y-4", className)}>
       {/* Search and Filter Row */}
-      <div className="flex flex-col sm:flex-row gap-3">
+      <div className="flex flex-col sm:flex-row gap-3 flex-wrap">
         {/* Search Input */}
-        <div className="relative flex-1">
+        <div className="relative flex-1 min-w-[200px]">
           <Input
             placeholder="Search templates..."
             value={filters.search}
@@ -124,6 +132,27 @@ export function TemplateFilters({
             ))}
           </SelectContent>
         </Select>
+
+        {/* Vertragstyp Filter — NEW */}
+        <Select
+          value={filters.vertragstyp || "all"}
+          onValueChange={handleVertragstypenChange}
+        >
+          <SelectTrigger className="w-full sm:w-[180px] h-10">
+            <div className="flex items-center gap-2">
+              <Tv className="h-4 w-4 text-muted-foreground" />
+              <SelectValue placeholder="All Vertragstypen" />
+            </div>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Vertragstypen</SelectItem>
+            {vertragstypen.map((typ) => (
+              <SelectItem key={typ} value={typ}>
+                {typ}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Active Filters & Count */}
@@ -156,6 +185,17 @@ export function TemplateFilters({
                 Category: {filters.category}
                 <button
                   onClick={() => onFilterChange({ ...filters, category: "" })}
+                  className="ml-1 hover:text-destructive"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </Badge>
+            )}
+            {filters.vertragstyp && (
+              <Badge variant="secondary" className="gap-1">
+                Vertragstyp: {filters.vertragstyp}
+                <button
+                  onClick={() => onFilterChange({ ...filters, vertragstyp: "" })}
                   className="ml-1 hover:text-destructive"
                 >
                   <X className="h-3 w-3" />

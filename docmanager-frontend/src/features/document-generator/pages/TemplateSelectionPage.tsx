@@ -7,6 +7,7 @@ import {
   useTemplates,
   useTemplateProviders,
   useTemplateCategories,
+  useTemplateVertragstypen,
 } from "../hooks";
 import { TemplateGrid, TemplateFilters, RecentTemplates } from "../components";
 import type { TemplateFilters as FilterState, TemplateItem } from "../types";
@@ -19,6 +20,7 @@ export default function TemplateSelectionPage() {
   const [filters, setFilters] = React.useState<FilterState>({
     provider: "",
     category: "",
+    vertragstyp: "",   // NEW
     search: "",
     tags: [],
   });
@@ -26,6 +28,7 @@ export default function TemplateSelectionPage() {
   // Extract filter options from templates
   const providers = useTemplateProviders(data);
   const categories = useTemplateCategories(data);
+  const vertragstypen = useTemplateVertragstypen(data);   // NEW
 
   // Filter templates based on current filters
   const filteredTemplates = React.useMemo(() => {
@@ -44,6 +47,14 @@ export default function TemplateSelectionPage() {
       if (filters.category) {
         const templateCategories = template.meta.category || [];
         if (!templateCategories.includes(filters.category)) {
+          return false;
+        }
+      }
+
+      // Vertragstyp filter — NEW
+      if (filters.vertragstyp) {
+        const templateTypen = template.meta.vertragstyp || [];
+        if (!templateTypen.includes(filters.vertragstyp)) {
           return false;
         }
       }
@@ -75,6 +86,7 @@ export default function TemplateSelectionPage() {
     setFilters({
       provider: "",
       category: "",
+      vertragstyp: "",
       search: "",
       tags: [],
     });
@@ -91,8 +103,9 @@ export default function TemplateSelectionPage() {
         </div>
 
         {/* Filters skeleton */}
-        <div className="flex gap-3">
+        <div className="flex gap-3 flex-wrap">
           <div className="h-10 flex-1 bg-muted rounded animate-pulse" />
+          <div className="h-10 w-[180px] bg-muted rounded animate-pulse" />
           <div className="h-10 w-[180px] bg-muted rounded animate-pulse" />
           <div className="h-10 w-[180px] bg-muted rounded animate-pulse" />
         </div>
@@ -163,6 +176,7 @@ export default function TemplateSelectionPage() {
         onFilterChange={setFilters}
         providers={providers}
         categories={categories}
+        vertragstypen={vertragstypen}
         totalCount={data?.files.length ?? 0}
         filteredCount={filteredTemplates.length}
       />
