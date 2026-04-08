@@ -12,6 +12,8 @@ export interface Placeholder {
   values?: Array<string | number>;
   optional?: boolean;
   offset?: number;
+  min_offset?: number;          // minimum date offset in days
+  require_one_of?: string[];    // group name: at least one field in the group is required
   hidden?: boolean;
   label?: string;
   description?: string;
@@ -24,7 +26,7 @@ export interface TemplateMeta {
   provider?: string[];
   category?: string[];
   tags?: string[];
-  vertragstyp?: string[];   // NEW: e.g. ["Mobilfunk"], ["DSL"], ["TV"], ["Kabel"]
+  vertragstyp?: string[];       // e.g. ["Mobilfunk"], ["DSL"], ["TV"], ["Kabel"]
   version?: string;
   creator?: string;
   name?: string;
@@ -77,7 +79,7 @@ export interface GenerateDocRequest {
 export interface TemplateFilters {
   provider: string;
   category: string;
-  vertragstyp: string;   // NEW
+  vertragstyp: string;
   search: string;
   tags: string[];
 }
