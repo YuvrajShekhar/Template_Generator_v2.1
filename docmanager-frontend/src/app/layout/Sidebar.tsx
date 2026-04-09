@@ -3,7 +3,6 @@ import { NavLink, useLocation } from "react-router-dom";
 import { cn } from "@shared/utils/cn";
 import {
   FileText,
-  FileCheck,
   Settings,
   ChevronLeft,
   ChevronRight,
@@ -30,12 +29,12 @@ const navItems: NavItem[] = [
     icon: <FileText className="h-5 w-5" />,
     description: "Generate documents from templates",
   },
-  {
-    label: "Document Validator",
-    href: "/validator",
-    icon: <FileCheck className="h-5 w-5" />,
-    description: "Validate document templates",
-  },
+  // {
+  //   label: "Document Validator",
+  //   href: "/validator",
+  //   icon: <FileCheck className="h-5 w-5" />,
+  //   description: "Validate document templates",
+  // },
   {
     label: "Email Dispatch History",
     href: "/dispatch",
