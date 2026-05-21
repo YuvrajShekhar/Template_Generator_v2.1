@@ -1,4 +1,5 @@
 from collections import OrderedDict
+import csv
 import html
 from io import BytesIO
 from pathlib import Path
@@ -6,7 +7,6 @@ from typing import Any, Dict, List, Set
 from docxtpl import DocxTemplate
 from jinja2 import Environment
 from xml.sax.saxutils import escape
-from openpyxl import load_workbook
 
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning, module="docxcompose.properties")
@@ -62,7 +62,7 @@ class DocManager:
     
     def _useReservedPlaceholders(self, ctx: Dict[str, Any]):
         if "PROVIDER" in ctx and ctx["PROVIDER"]:
-            ctx["PROVIDER_ADDR"] = self._load_provider_addr("provider_addresses.xlsx", ctx["PROVIDER"])
+            ctx["PROVIDER_ADDR"] = self._load_provider_addr("provider_addresses.csv", ctx["PROVIDER"])
         
     
     # ---------- reading ----------
@@ -115,16 +115,18 @@ class DocManager:
         Merged: placeholders (from file) + options (from Jinja blocks)
         - entries from options match by name
         - unknown placeholders get default: {"name":..., "type":"string"}
+        - PROVIDER_ADDR is auto-filled; a PROVIDER enum is injected instead
         """
         ph = self.get_placeholders(filename)
         opts = self.get_options(filename)
-        
+
         opt_by_name = {o.get("name"): o for o in opts if isinstance(o, dict) and "name" in o}
         result: List[dict] = []
-        
-        for name in (ph - Reserved):
+
+        has_provider_addr = "PROVIDER_ADDR" in ph
+
+        for name in (ph - Reserved - Reserved_placeholders):
             if name in opt_by_name:
-                # shallow copy is enough here
                 entry = dict(opt_by_name[name])
                 entry.setdefault("name", name)
                 if entry.get("values"):
@@ -134,6 +136,17 @@ class DocManager:
                 result.append(entry)
             else:
                 result.append({"name": name, "type": "string"})
+
+        if has_provider_addr:
+            providers = self.list_providers()
+            if providers:
+                result.insert(0, {
+                    "name": "PROVIDER",
+                    "type": "enum",
+                    "values": providers,
+                    "label": "Stromanbieter",
+                })
+
         return result
     
     def get_layout(self, filename: str):
@@ -184,33 +197,35 @@ class DocManager:
         buf.seek(0)
         return buf
     
-    # ---------- read Excel ----------
-    def _load_provider_addr(self, xlsx_name: str, provider_id: str) -> str:
-        xlsx_path = self.base_dir / xlsx_name
-        if not xlsx_path.exists():
+    # ---------- read CSV ----------
+    def _load_provider_addr(self, csv_name: str, provider_name: str) -> str:
+        csv_path = self.base_dir / csv_name
+        if not csv_path.exists():
             return ""
-        
         try:
-            wb = load_workbook(xlsx_path, data_only=True, read_only=True)
-            ws = wb.worksheets[0]
-            rows = list(ws.iter_rows(values_only=True))
-            if not rows:
-                return ""
-            
-            headers = [str(h or "").strip().lower() for h in rows[0]]
-            idx = {h: i for i, h in enumerate(headers)}
-            
-            for r in rows[1:]:
-                if not r:
-                    continue
-                row = {h: str(r[idx[h]] or "").strip() for h in headers}
-                if row.get("id") == provider_id:
-                    return "\n".join([
-                        row.get("name", ""),
-                        row.get("street", ""),
-                        f"{row.get('zip', '')} {row.get('city', '')}".strip()
-                    ])
+            with open(csv_path, newline="", encoding="utf-8") as f:
+                for row in csv.DictReader(f):
+                    if row.get("name", "").strip() == provider_name:
+                        zip_city = f"{row.get('zip','').strip()} {row.get('city','').strip()}".strip()
+                        return "\n".join(filter(None, [
+                            row.get("name", "").strip(),
+                            row.get("street", "").strip(),
+                            zip_city,
+                        ]))
         except Exception:
             return ""
-        
         return ""
+
+    def list_providers(self, csv_name: str = "provider_addresses.csv") -> List[str]:
+        csv_path = self.base_dir / csv_name
+        if not csv_path.exists():
+            return []
+        try:
+            with open(csv_path, newline="", encoding="utf-8") as f:
+                return [
+                    row["name"].strip()
+                    for row in csv.DictReader(f)
+                    if row.get("name", "").strip()
+                ]
+        except Exception:
+            return []
