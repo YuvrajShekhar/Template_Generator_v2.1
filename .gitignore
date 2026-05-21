@@ -46,3 +46,7 @@ dist-ssr/
 .env
 .env.local
 .env.*.local
+
+#Customer Data
+data/mails_sent.csv
+data/provider_addresses.csv
