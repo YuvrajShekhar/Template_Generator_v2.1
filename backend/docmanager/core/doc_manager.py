@@ -144,7 +144,7 @@ class DocManager:
                     "name": "PROVIDER",
                     "type": "enum",
                     "values": providers,
-                    "label": "Stromanbieter",
+                    "label": "Strom-/Gasversorger",
                 })
 
         return result
