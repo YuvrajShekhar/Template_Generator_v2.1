@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Search, X, Filter, SlidersHorizontal, Tv } from "lucide-react";
+import { Search, X, Filter, SlidersHorizontal } from "lucide-react";
+import { getContractIcon } from "./TemplateCard";
 import {
   Input,
   Button,
@@ -140,7 +141,10 @@ export function TemplateFilters({
         >
           <SelectTrigger className="w-full sm:w-[180px] h-10">
             <div className="flex items-center gap-2">
-              <Tv className="h-4 w-4 text-muted-foreground" />
+              {(() => {
+                const Icon = getContractIcon(filters.vertragstyp ? [filters.vertragstyp] : undefined);
+                return <Icon className="h-4 w-4 text-muted-foreground shrink-0" />;
+              })()}
               <SelectValue placeholder="All Vertragstypen" />
             </div>
           </SelectTrigger>

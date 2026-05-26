@@ -1,6 +1,22 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FileText, User, Tag, Building2, ArrowRight } from "lucide-react";
+import {
+  FileText, User, Tag, Building2, ArrowRight,
+  Flame, Zap, Tv, Radio, Wifi, Smartphone,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+
+export function getContractIcon(vertragstyp?: string[]): LucideIcon {
+  const type = (vertragstyp?.[0] ?? "").toLowerCase();
+  if (type.includes("gas"))                                        return Flame;
+  if (type.includes("strom") || type.includes("storm"))            return Zap;
+  if (type === "tv")                                               return Tv;
+  if (type.includes("kabel") || type.includes("cable") || type === "cabel") return Radio;
+  if (type.includes("dsl"))                                        return Wifi;
+  if (type.includes("mobilfunk") || type.includes("mobile"))       return Smartphone;
+  return FileText;
+}
+
 import {
   Card,
   CardContent,
@@ -25,6 +41,7 @@ export function TemplateCard({
 }: TemplateCardProps) {
   const navigate = useNavigate();
   const { filename, meta } = template;
+  const ContractIcon = getContractIcon(meta.vertragstyp);
 
   const handleClick = () => {
     const encodedFilename = encodeURIComponent(filename);
@@ -59,7 +76,7 @@ export function TemplateCard({
           <div className="flex items-start gap-3">
             {/* Icon */}
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-              <FileText className="h-5 w-5 text-primary" />
+              <ContractIcon className="h-5 w-5 text-primary" />
             </div>
 
             {/* Title & Version */}
