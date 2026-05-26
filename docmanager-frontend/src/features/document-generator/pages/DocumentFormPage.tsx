@@ -11,7 +11,7 @@ import {
   formValuesToContext,
   useRecentTemplates,
 } from "../hooks";
-import { TemplateHeader, DynamicForm } from "../components";
+import { TemplateHeader, DynamicForm, DocumentPreviewModal } from "../components";
 import type { FormFieldValue, FormValues } from "../types";
 
 export default function DocumentFormPage() {
@@ -40,6 +40,7 @@ export default function DocumentFormPage() {
   // Form values state
   const [formValues, setFormValues] = React.useState<FormValues>({});
   const [formErrors, setFormErrors] = React.useState<Record<string, string>>({});
+  const [previewBlob, setPreviewBlob] = React.useState<Blob | null>(null);
 
   // Initialize form values when placeholders are loaded
   React.useEffect(() => {
@@ -153,10 +154,11 @@ export default function DocumentFormPage() {
     const context = formValuesToContext(formValues, data.placeholders);
 
     try {
-      await generateMutation.mutateAsync({
+      const blob = await generateMutation.mutateAsync({
         filename: decodedFilename,
         context,
       });
+      setPreviewBlob(blob);
     } catch {
       // Error is handled by the mutation
     }
@@ -264,6 +266,13 @@ export default function DocumentFormPage() {
         onReset={handleReset}
         isSubmitting={generateMutation.isPending}
         errors={formErrors}
+      />
+
+      {/* Preview / Print modal */}
+      <DocumentPreviewModal
+        blob={previewBlob}
+        filename={decodedFilename}
+        onClose={() => setPreviewBlob(null)}
       />
     </motion.div>
   );

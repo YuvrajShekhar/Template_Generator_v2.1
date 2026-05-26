@@ -9,17 +9,12 @@ interface GenerateDocumentParams {
 
 /**
  * Hook to generate a document from a template
+ * Returns the blob via mutateAsync for preview/print/download
  */
 export function useDocumentGeneration() {
-  return useMutation({
-    mutationFn: async ({ filename, context }: GenerateDocumentParams) => {
-      return documentGeneratorApi.generateDocument(filename, context);
-    },
-    onSuccess: () => {
-      toast.success("Document generated successfully!", {
-        description: "Your download should start automatically.",
-      });
-    },
+  return useMutation<Blob, Error, GenerateDocumentParams>({
+    mutationFn: ({ filename, context }) =>
+      documentGeneratorApi.generateDocument(filename, context),
     onError: (error: Error) => {
       toast.error("Failed to generate document", {
         description: error.message || "Please try again.",

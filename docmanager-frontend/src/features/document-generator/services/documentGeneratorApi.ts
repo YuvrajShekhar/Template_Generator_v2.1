@@ -1,4 +1,4 @@
-import { api, downloadBlob } from "@shared/hooks/useApi";
+import { api } from "@shared/hooks/useApi";
 import { API_ENDPOINTS } from "@shared/constants/api";
 import type {
   TemplatesResponse,
@@ -28,20 +28,14 @@ export const documentGeneratorApi = {
 
   /**
    * Generate a document from a template with context data
-   * Returns the document as a blob for download
+   * Returns the blob for preview/download
    */
   generateDocument: async (
     filename: string,
     context: Record<string, unknown>
-  ): Promise<void> => {
+  ): Promise<Blob> => {
     const request: GenerateDocRequest = { filename, context };
-    
-    const blob = await api.post<Blob>(API_ENDPOINTS.GENERATE_DOC, request as unknown as Record<string, unknown>);
-    
-    // Extract filename from the original template name
-    const downloadFilename = filename.replace(/\.docx$/i, "_generated.docx");
-    
-    downloadBlob(blob, downloadFilename);
+    return api.post<Blob>(API_ENDPOINTS.GENERATE_DOC, request as unknown as Record<string, unknown>);
   },
 };
 
