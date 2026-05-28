@@ -45,29 +45,32 @@ export function DocumentPreviewModal({ blob, filename, onClose }: DocumentPrevie
       });
   }, [blob, containerNode]);
 
-  const handlePrint = () => {
-    if (!containerNode) return;
-
-    const styles = Array.from(document.styleSheets)
-      .flatMap((ss) => {
-        try { return Array.from(ss.cssRules).map((r) => r.cssText); }
-        catch { return []; }
-      })
-      .join("\n");
+  const handlePrint = async () => {
+    if (!blob) return;
 
     const iframe = document.createElement("iframe");
     iframe.style.cssText =
       "position:fixed;top:-9999px;left:-9999px;width:210mm;height:297mm;border:0";
     document.body.appendChild(iframe);
 
-    const doc = iframe.contentDocument!;
-    doc.open();
-    doc.write(
-      `<!DOCTYPE html><html><head><meta charset="utf-8"/>` +
-      `<style>${styles} body{margin:0;background:#fff;}</style>` +
-      `</head><body>${containerNode.innerHTML}</body></html>`
-    );
-    doc.close();
+    const iframeDoc = iframe.contentDocument!;
+
+    // Minimal print stylesheet — no page borders, let browser paginate naturally
+    const style = iframeDoc.createElement("style");
+    style.textContent = `
+      @page { margin: 15mm; size: auto; }
+      body { margin: 0; padding: 0; background: #fff; font-family: sans-serif; }
+    `;
+    iframeDoc.head.appendChild(style);
+
+    // Re-render directly into the iframe body without the screen wrapper/page borders
+    await renderAsync(blob, iframeDoc.body, iframeDoc.head, {
+      className: "docx-print",
+      inWrapper: false,
+      ignoreWidth: true,
+      ignoreHeight: true,
+      breakPages: false,
+    });
 
     iframe.contentWindow!.focus();
     setTimeout(() => {
