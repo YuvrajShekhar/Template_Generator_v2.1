@@ -83,7 +83,7 @@ export function DynamicForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className={cn("space-y-6", className)}>
+    <form onSubmit={handleSubmit} autoComplete="new-password" className={cn("space-y-6", className)}>
       <motion.div
         variants={containerVariants}
         initial="hidden"

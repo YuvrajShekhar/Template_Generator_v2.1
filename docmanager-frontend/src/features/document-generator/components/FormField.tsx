@@ -102,6 +102,7 @@ export function FormField({
               value={String(value ?? "")}
               onChange={(e) => handleChange(e.target.value)}
               min={minDate}
+              autoComplete="new-password"
               error={!!error}
               disabled={disabled}
             />
@@ -116,6 +117,7 @@ export function FormField({
           value={String(value ?? "")}
           onChange={(e) => handleChange(e.target.value)}
           placeholder={`Enter ${label.toLowerCase()}`}
+          autoComplete="new-password"
           error={!!error}
           disabled={disabled}
         />
@@ -126,6 +128,7 @@ export function FormField({
           value={String(value ?? "")}
           onChange={(e) => handleChange(e.target.value)}
           placeholder={`Enter ${label.toLowerCase()}`}
+          autoComplete="new-password"
           error={!!error}
           disabled={disabled}
         />
