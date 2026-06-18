@@ -98,9 +98,9 @@ export function TemplateFilters({
           onValueChange={handleProviderChange}
         >
           <SelectTrigger className="w-full sm:w-[180px] h-10">
-            <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4 text-muted-foreground" />
-              <SelectValue placeholder="All Providers" />
+            <div className="flex items-center gap-2 min-w-0">
+              <Filter className="h-4 w-4 text-muted-foreground shrink-0" />
+              <SelectValue placeholder="All Providers" className="truncate flex-1 min-w-0 text-left" />
             </div>
           </SelectTrigger>
           <SelectContent>
@@ -119,9 +119,9 @@ export function TemplateFilters({
           onValueChange={handleCategoryChange}
         >
           <SelectTrigger className="w-full sm:w-[180px] h-10">
-            <div className="flex items-center gap-2">
-              <SlidersHorizontal className="h-4 w-4 text-muted-foreground" />
-              <SelectValue placeholder="All Categories" />
+            <div className="flex items-center gap-2 min-w-0">
+              <SlidersHorizontal className="h-4 w-4 text-muted-foreground shrink-0" />
+              <SelectValue placeholder="All Categories" className="truncate flex-1 min-w-0 text-left" />
             </div>
           </SelectTrigger>
           <SelectContent>
@@ -140,12 +140,12 @@ export function TemplateFilters({
           onValueChange={handleVertragstypenChange}
         >
           <SelectTrigger className="w-full sm:w-[180px] h-10">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 min-w-0">
               {(() => {
                 const Icon = getContractIcon(filters.vertragstyp ? [filters.vertragstyp] : undefined);
                 return <Icon className="h-4 w-4 text-muted-foreground shrink-0" />;
               })()}
-              <SelectValue placeholder="All Vertragstypen" />
+              <SelectValue placeholder="All Vertragstypen" className="truncate flex-1 min-w-0 text-left" />
             </div>
           </SelectTrigger>
           <SelectContent>
